@@ -6,11 +6,23 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    for(int i = 0; i < argc; i ++)
+    a.setApplicationName(APP_NAME);
+    a.setApplicationVersion(APP_VER);
+    a.setOrganizationName(CORP_NAME);
+
+    QCommandLineParser parser;
+    parser.addHelpOption();
+    parser.addOption({{"v","version"}, QCoreApplication::tr("Show version")});
+
+    parser.process(a);
+    if(parser.isSet("version"))
     {
-        qDebug()<< i << " " << argv[i];
+        qDebug()<<a.applicationVersion();
     }
-    qDebug()<<"HI";
+
+
+
+
     exit(0);
     return a.exec();
 }
