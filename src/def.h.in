@@ -1,0 +1,16 @@
+#ifndef DEF_H
+#define DEF_H
+
+#include <QDebug>
+
+#define APP_NAME "${PROJECT_NAME}"
+#define APP_VER "${VERSION}"
+#define GIT_VERSION "${GIT_VERSION}"
+#define CORP_NAME "MDM-Service"
+#define FORMAT_DATE "yyyy-MM-dd"
+#define FORMAT_TIME "hh:mm:ss"
+#define FORMAT_DATETIME "yyyy-MM-dd hh:mm:ss"
+#define DEF_SLEEP_TIME 100
+
+
+#endif // DEF_H
