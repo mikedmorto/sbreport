@@ -19,8 +19,9 @@ bool SBdata::loadFio(const QString &path)
     fioFile.setFileName(path);
     if(!fioFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        this->lastError =  fioFile.errorString();
-         qDebug() << "cannot open file" << path << "because of "<< this->lastError;
+        this->lastError = "cannot open file " + path + " because of ";
+        this->lastError += fioFile.errorString();
+         qDebug() << this->lastError;
 
          return false;
     }
