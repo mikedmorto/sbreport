@@ -2,6 +2,7 @@
 #include <QCommandLineParser>
 #include "def.h"
 #include "sbconfig.h"
+#include "sbdata.h"
 
 using namespace std;
 
@@ -56,6 +57,12 @@ int main(int argc, char *argv[])
         qDebug()<<a.applicationVersion();
     }
 
+    SB::SBdata data;
+    if(!data.loadFio(cfg.getFioPath())){
+        qDebug() << "Main error = " << data.getLastError();
+        exit(1);
+    }
+    qDebug()<< " Main ok";
     exit(0);
     return a.exec();
 }
