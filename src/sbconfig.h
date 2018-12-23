@@ -17,12 +17,15 @@ public:
     QString getTargetPath()const;
     QString getOutputPath()const;
     QString getFioPath()const;
-
+    bool isValid();
 
 private:
     QString targetPath;
     QString outputPath;
     QString fioPath;
+    bool isOK;
+
+    void validate();
 };
 
 }

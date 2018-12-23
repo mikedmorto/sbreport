@@ -52,6 +52,10 @@ int main(int argc, char *argv[])
         qDebug()<<a.applicationVersion();
     }
 
+    if(!cfg.isValid()){
+        qDebug()<<"cfg is not valide";
+        exit(1);
+    }
 
     exit(0);
     return a.exec();

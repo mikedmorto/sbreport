@@ -4,6 +4,7 @@ using namespace SB;
 
 SBconfig::SBconfig()
 {
+    this->isOK = false;
 }
 
 void SBconfig::setTargetPath(const QString &_targetPath)
@@ -36,5 +37,28 @@ QString SBconfig::getOutputPath() const
 QString SBconfig::getFioPath() const
 {
     return this->fioPath;
+}
+
+bool SBconfig::isValid()
+{
+    this->validate();
+    return this->isOK;
+}
+
+void SBconfig::validate()
+{
+    bool ok = true;
+    if(this->fioPath.isEmpty()){
+        ok = false;
+    }
+
+    if(this->outputPath.isEmpty()){
+        ok = false;
+    }
+
+    if(this->targetPath.isEmpty()){
+        ok = false;
+    }
+    this->isOK = ok;
 }
 
