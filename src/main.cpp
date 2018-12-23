@@ -3,6 +3,7 @@
 #include "def.h"
 #include "sbconfig.h"
 
+using namespace std;
 
 int main(int argc, char *argv[])
 {
@@ -32,27 +33,28 @@ int main(int argc, char *argv[])
     parser.addOption(output_fileOption);
 
     parser.process(a);
+
     SBconfig cfg;
+
     if(parser.isSet("f"))
     {
         cfg.setFioPath(parser.value("f"));
         qDebug()<<"fio-file = " << cfg.getFioPath();
     }
-    if(parser.isSet("t"))
+    else if(parser.isSet("t"))
     {
         cfg.setTargetPath(parser.value("t"));
         qDebug()<<"target-file = " << cfg.getTargetPath();
     }
-    if(parser.isSet("o"))
+    else if(parser.isSet("o"))
     {
         cfg.setOutputPath(parser.value("o"));
         qDebug()<<"output-file = " << cfg.getOutputPath();
     }
-    if(parser.isSet("version"))
+    else if(parser.isSet("version"))
     {
         qDebug()<<a.applicationVersion();
     }
-
 
     exit(0);
     return a.exec();
