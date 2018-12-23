@@ -14,7 +14,7 @@ const QString SBdata::getLastError()
 
 bool SBdata::loadFio(const QString &path)
 {
-    qDebug() << "open file " << path;
+    qDebug() << "opening file " << path;
     QFile fioFile;
     fioFile.setFileName(path);
     if(!fioFile.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -25,5 +25,7 @@ bool SBdata::loadFio(const QString &path)
 
          return false;
     }
+    qDebug() << "closing the file" + path;
+    fioFile.close();
     return true;
 }
