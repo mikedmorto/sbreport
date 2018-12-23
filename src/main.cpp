@@ -3,7 +3,6 @@
 #include "def.h"
 #include "sbconfig.h"
 
-
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -32,7 +31,7 @@ int main(int argc, char *argv[])
     parser.addOption(output_fileOption);
 
     parser.process(a);
-    SBconfig cfg;
+    SB::SBconfig cfg;
     if(parser.isSet("f"))
     {
         cfg.setFioPath(parser.value("f"));
@@ -57,3 +56,4 @@ int main(int argc, char *argv[])
     exit(0);
     return a.exec();
 }
+

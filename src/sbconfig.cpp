@@ -1,5 +1,7 @@
 #include "sbconfig.h"
 
+using namespace SB;
+
 SBconfig::SBconfig()
 {
 }

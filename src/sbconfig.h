@@ -2,6 +2,9 @@
 #define SBCONFIG_H
 #include <QString>
 
+namespace SB {
+
+
 class SBconfig
 {
 public:
@@ -22,4 +25,5 @@ private:
     QString fioPath;
 };
 
+}
 #endif // SBCONFIG_H
