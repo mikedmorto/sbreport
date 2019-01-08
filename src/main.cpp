@@ -42,26 +42,50 @@ int main(int argc, char *argv[])
         cfg.setFioPath(parser.value("f"));
         qDebug()<<"fio-file = " << cfg.getFioPath();
     }
-    else if(parser.isSet("t"))
+    if(parser.isSet("t"))
     {
         cfg.setTargetPath(parser.value("t"));
         qDebug()<<"target-file = " << cfg.getTargetPath();
     }
-    else if(parser.isSet("o"))
+    if(parser.isSet("o"))
     {
         cfg.setOutputPath(parser.value("o"));
         qDebug()<<"output-file = " << cfg.getOutputPath();
     }
-    else if(parser.isSet("version"))
+    if(parser.isSet("version"))
     {
         qDebug()<<a.applicationVersion();
     }
+
+    // compare keys
+    bool isOK = true;
+    if(parser.isSet("f")){
+        if(!parser.isSet("t"))
+            isOK = false;
+        // others
+    }
+
+    if(!isOK){
+        // fail params
+        qDebug()<<"Failure params";
+        exit(1);
+    }
+
+
 
     SB::SBdata data;
     if(!data.loadFio(cfg.getFioPath())){
         qDebug() << "Main error = " << data.getLastError();
         exit(1);
     }
+
+    qDebug()<<"ddd" << cfg.getTargetPath();
+    if(!data.loadEvent((cfg.getTargetPath())))
+    {
+        qDebug() << "Main error = " << data.getLastError();
+        exit(1);
+    }
+
     qDebug()<< " Main ok";
     exit(0);
     return a.exec();
