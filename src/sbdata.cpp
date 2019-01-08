@@ -27,7 +27,7 @@ bool SBdata::loadFio(const QString &path)
 
 
     QTextStream in(&fioFile);
-//    in.setCodec("UTF-8");
+
 
     while(!in.atEnd()){
         QString line = in.readLine();
@@ -61,7 +61,7 @@ bool SBdata::loadEvent(const QString &path)
           return false;
      }
      QTextStream in(&eventFile);
-
+     in.setCodec("UTF-8");
      while(!in.atEnd()){
          QString line = in.readLine();
 //         qDebug() << "The current string " << line;
