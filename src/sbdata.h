@@ -29,7 +29,7 @@ public:
     const QString getLastError();
     bool loadFio(const QString &path);
     void clearFio();
-    bool loadEvent(const QString &path);
+    bool loadEvent(const QString &path, const QDate &targetDate);
     void clearEvent();
 
 };

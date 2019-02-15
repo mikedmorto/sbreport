@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    if(!data.loadEvent((cfg.getTargetPath())))
+    if(!data.loadEvent(cfg.getTargetPath(), cfg.getTargetDate()))
     {
         qDebug() << "Main error = " << data.getLastError();
         exit(1);

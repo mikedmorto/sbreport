@@ -47,7 +47,7 @@ void SBdata::clearFio()
     this->fioList.clear();
 }
 
-bool SBdata::loadEvent(const QString &path)
+bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
 {
     qDebug()<<"Load event start";
     this->clearEvent();
@@ -80,7 +80,11 @@ bool SBdata::loadEvent(const QString &path)
             continue;
 
         //qDebug() << sl.at(5);
-        out<< sl.at(5) << endl;
+        out<< sl.at(0) << endl;
+        QDate tdate = QDate::fromString(sl.at(0),"dd.MM.yyyy");
+
+        if( !((tdate.year() == targetDate.year()) && (tdate.month() == targetDate.month())) )
+             continue;
 
         if(sl.at(5).contains(QRegExp("^(([0-9]*|парковка):Вход.*|([0-9]*|парковка):Выход.*)$"))){
 //        if(sl.at(5).contains(QRegExp(QString::fromUtf8("^.*\:Вход.*$")))){
