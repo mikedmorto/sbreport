@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
     if(parser.isSet("version"))
     {
         qDebug()<<a.applicationVersion();
+        exit(0);
     }
 
     // compare keys
