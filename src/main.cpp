@@ -31,10 +31,14 @@ int main(int argc, char *argv[])
                                       QCoreApplication::translate("main", "Path to output file <path>."),
                                       QCoreApplication::translate("main", "path"));
 
+    QCommandLineOption target_month(QStringList() << "m" << "target-month",
+                                      QCoreApplication::translate("main", "Target month format MM.yyyy like 12.2012"),
+                                      QCoreApplication::translate("main", "month"));
+
     parser.addOption(fio_fileOption);
     parser.addOption(target_fileOption);
     parser.addOption(output_fileOption);
-
+    parser.addOption(target_month);
     parser.process(a);
 
     SBconfig cfg;
@@ -54,6 +58,15 @@ int main(int argc, char *argv[])
         cfg.setOutputPath(parser.value("o"));
         qDebug()<<"output-file = " << cfg.getOutputPath();
     }
+    if(parser.isSet("m"))
+    {
+        cfg.setTargetDate(parser.value("m"));
+
+        if(!cfg.isValidDate()){
+            QTextStream(stderr)<< parser.value("m") <<" - invalid date time format " << endl;
+            exit(1);
+        }
+    }
     if(parser.isSet("version"))
     {
         //qDebug()<<a.applicationVersion();
@@ -65,8 +78,10 @@ int main(int argc, char *argv[])
     bool isOK = true;
     if(parser.isSet("f")){
         if(!parser.isSet("t"))
-            isOK = false;
+                isOK = false;
         // others
+        if(!parser.isSet("m"))
+            isOK = false;
     }
 
     if(!isOK){
