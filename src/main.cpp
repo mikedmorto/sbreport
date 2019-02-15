@@ -1,8 +1,10 @@
 #include <QCoreApplication>
 #include <QCommandLineParser>
+#include <QTextStream>
 #include "def.h"
 #include "sbconfig.h"
 #include "sbdata.h"
+
 
 using namespace std;
 
@@ -54,7 +56,8 @@ int main(int argc, char *argv[])
     }
     if(parser.isSet("version"))
     {
-        qDebug()<<a.applicationVersion();
+        //qDebug()<<a.applicationVersion();
+        QTextStream(stdout)<< a.applicationVersion() << endl;
         exit(0);
     }
 
