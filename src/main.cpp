@@ -83,14 +83,12 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    qDebug()<<"ddd" << cfg.getTargetPath();
     if(!data.loadEvent((cfg.getTargetPath())))
     {
         qDebug() << "Main error = " << data.getLastError();
         exit(1);
     }
 
-    qDebug()<< " Main ok";
     exit(0);
     return a.exec();
 }
