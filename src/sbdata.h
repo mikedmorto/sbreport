@@ -23,6 +23,7 @@ private:
     QStringList fioList;
     QString lastError;
     QVector<EventInfo> evenVec;
+    QDate targetDate;
 
 public:
     SBdata();
@@ -31,6 +32,7 @@ public:
     void clearFio();
     bool loadEvent(const QString &path, const QDate &targetDate);
     void clearEvent();
+    void processing();
 
 };
 }

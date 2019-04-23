@@ -27,6 +27,7 @@ bool SBdata::loadFio(const QString &path)
 
 
     QTextStream in(&fioFile);
+    in.setCodec("UTF-8");
 
 
     while(!in.atEnd()){
@@ -52,6 +53,8 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
     qDebug()<<"Load event start";
     this->clearEvent();
     QFile eventFile;
+
+    this->targetDate = targetDate;
 
     eventFile.setFileName(path);
      if(!eventFile.open(QIODevice::ReadOnly | QIODevice::Text)){
@@ -80,7 +83,7 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
             continue;
 
         //qDebug() << sl.at(5);
-        out<< sl.at(0) << endl;
+        // out<< sl.at(0) << endl;
         QDate tdate = QDate::fromString(sl.at(0),"dd.MM.yyyy");
 
         if( !((tdate.year() == targetDate.year()) && (tdate.month() == targetDate.month())) )
@@ -106,4 +109,38 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
 void SBdata::clearEvent()
 {
     this->evenVec.clear();
+}
+
+void SBdata::processing()
+{
+    qDebug() << "start";
+    int lastDay = this->targetDate.daysInMonth();
+    qDebug() << "last day: " << lastDay;
+    for(int i = 0; i < fioList.size(); i++)
+    {
+        qDebug() << "person " << fioList.at(i);
+
+        for( int k = 1 ; k <= lastDay; k++){
+
+            QVector<EventInfo> personEV;
+            for(int j = 0; j < evenVec.size(); j++)
+            {
+                // qDebug()<<"A - "<< evenVec.at(j).person;
+//                qDebug()<<"B - "<< fioList.at(i);
+
+                if(evenVec.at(j).person == fioList.at(i)
+                        and evenVec.at(j).date.day() == k ){
+//                    qDebug()<<"OKKKK";
+                    personEV.append(evenVec.at(j));
+
+                }
+            }
+            qDebug() << QString("Day %1 event size %2").arg(k).arg(personEV.size());
+
+        }
+
+    }
+
+    qDebug() << "end";
+
 }
