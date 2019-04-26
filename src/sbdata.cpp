@@ -95,16 +95,20 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
             EventInfo ei;
 //            qDebug()<<sl.at(0);
             ei.date = QDate::fromString(sl.at(0),"dd.MM.yyyy");
-            ei.time = QTime::fromString(sl.at(1), "hh:mm:ss");
+            ei.time = QTime::fromString(sl.at(1), "h:mm:ss");
             ei.event = sl.at(5);
             ei.person = sl.at(8);
-            this->evenVec.append(ei);
+
+            // testing of date time
+            if(ei.date.isValid() and ei.time.isValid()){
+                this->evenVec.append(ei);
+            }
         }
 
      }
      qDebug()<< "evenVec size == " << evenVec.size();
      qDebug() <<"end load event file";
-
+    return true;
 }
 void SBdata::clearEvent()
 {
@@ -150,11 +154,10 @@ void SBdata::processing()
 
 
             for(int l = 0; l < personEV.size(); l ++) {
-                qDebug()<<"EVENT" << personEV.at(l).event << " - "<< personEV.at(l).time;
+//                qDebug()<<"EVENT" << personEV.at(l).event << " - "<< personEV.at(l).date << "="<< personEV.at(l).time;
 
 
                 if(personEV.at(l).event.contains(regEnter)) {
-
                     if(firstEnter.isNull){
                         firstEnter = personEV.at(l);
                         firstEnter.isNull = false;
@@ -165,8 +168,10 @@ void SBdata::processing()
                         firstEnter = personEV.at(l);
                         continue;
                     }
-
+                    continue;
                 }
+
+
                 if(personEV.at(l).event.contains(regExit)){
                     if(lastExit.isNull){
                         lastExit = personEV.at(l);
@@ -178,12 +183,12 @@ void SBdata::processing()
                         lastExit = personEV.at(l);
                         continue;
                     }
-
-
+                    continue;
                 }
             }
-            qDebug() << "firstEnter " << firstEnter.time.toString(FORMAT_TIME);
-            qDebug() << "lastExit" << lastExit.time.toString(FORMAT_TIME);
+//            qDebug() << "firstEnter " << firstEnter.time.toString(FORMAT_TIME);
+//            qDebug() << "lastExit" << lastExit.time.toString(FORMAT_TIME);
+
 
              // analytic first input, last output
         }
