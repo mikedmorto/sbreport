@@ -8,6 +8,9 @@
 #include <QTime>
 #include <QDateTime>
 #include <QVector>
+#include <QRegExp>
+#include "def.h"
+
 namespace SB {
 struct EventInfo
 {
@@ -15,6 +18,10 @@ struct EventInfo
     QTime time;
     QString event;
     QString person;
+    bool isNull;
+    EventInfo(){
+        isNull = true;
+    }
 };
 
 
@@ -24,9 +31,10 @@ private:
     QStringList fioList;
     QString lastError;
     QVector<EventInfo> evenVec;
-    QStringList eventEnter;
-    QStringList eventExit;
+
     QDate targetDate;
+
+
 
 public:
     SBdata();

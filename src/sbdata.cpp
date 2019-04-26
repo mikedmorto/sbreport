@@ -113,8 +113,13 @@ void SBdata::clearEvent()
 
 void SBdata::processing()
 {
+    QRegExp regEnter("^([0-9]*|парковка):Вход.*$");
+    QRegExp regExit ("^([0-9]*|парковка):Выход.*$");
+
+
     qDebug() << "start";
     int lastDay = this->targetDate.daysInMonth();
+
     qDebug() << "last day: " << lastDay;
     for(int i = 0; i < fioList.size(); i++)
     {
@@ -137,39 +142,54 @@ void SBdata::processing()
 
             }
             qDebug() << QString("Day %1 event size %2").arg(k).arg(personEV.size());
-
+            EventInfo firstEnter;
+            EventInfo lastExit;
 
 
             //два множества событий всех входов и всех выходов
 
-            QRegExp enter("^([0-9]*|парковка):Вход.*");
-            QRegExp exit ("([0-9]*|парковка):Выход.*)$");
 
-            if(personEV.at(i).event.contains(enter)) {
+            for(int l = 0; l < personEV.size(); l ++) {
+                qDebug()<<"EVENT" << personEV.at(l).event << " - "<< personEV.at(l).time;
 
-                enter.indexIn(personEV[i].event);
-                 eventEnter = enter.capturedTexts();
 
-                if(personEV.at(i).event.contains(exit)){
+                if(personEV.at(l).event.contains(regEnter)) {
 
-                 exit.indexIn(personEV[i].event);
-                 eventExit = exit.capturedTexts();
+                    if(firstEnter.isNull){
+                        firstEnter = personEV.at(l);
+                        firstEnter.isNull = false;
+                        continue;
+                    }
+
+                    if(firstEnter.time > personEV.at(l).time){
+                        firstEnter = personEV.at(l);
+                        continue;
+                    }
+
+                }
+                if(personEV.at(l).event.contains(regExit)){
+                    if(lastExit.isNull){
+                        lastExit = personEV.at(l);
+                        lastExit.isNull = false;
+                        continue;
+                    }
+
+                    if(lastExit.time < personEV.at(l).time){
+                        lastExit = personEV.at(l);
+                        continue;
+                    }
+
 
                 }
             }
+            qDebug() << "firstEnter " << firstEnter.time.toString(FORMAT_TIME);
+            qDebug() << "lastExit" << lastExit.time.toString(FORMAT_TIME);
 
              // analytic first input, last output
         }
 
     }
-    for(int i = 0; i < eventEnter.length(); i++)
-    {
-        qDebug() << "enter " << eventEnter.at(i);
-    }
-    for(int i = 0; i < eventExit.length(); i++)
-    {
-        qDebug() << "exit " << eventExit.at(i);
-    }
+
 
     qDebug() << "end";
 
