@@ -17,12 +17,15 @@ struct EventInfo
     QString person;
 };
 
+
 class SBdata
 {
 private:
     QStringList fioList;
     QString lastError;
     QVector<EventInfo> evenVec;
+    QStringList eventEnter;
+    QStringList eventExit;
     QDate targetDate;
 
 public:

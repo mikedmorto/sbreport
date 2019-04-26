@@ -126,19 +126,49 @@ void SBdata::processing()
             for(int j = 0; j < evenVec.size(); j++)
             {
                 // qDebug()<<"A - "<< evenVec.at(j).person;
-//                qDebug()<<"B - "<< fioList.at(i);
+                // qDebug()<<"B - "<< fioList.at(i);
 
                 if(evenVec.at(j).person == fioList.at(i)
                         and evenVec.at(j).date.day() == k ){
-//                    qDebug()<<"OKKKK";
+                // qDebug()<<"OKKKK";
                     personEV.append(evenVec.at(j));
 
                 }
+
             }
             qDebug() << QString("Day %1 event size %2").arg(k).arg(personEV.size());
 
+
+
+            //два множества событий всех входов и всех выходов
+
+            QRegExp enter("^([0-9]*|парковка):Вход.*");
+            QRegExp exit ("([0-9]*|парковка):Выход.*)$");
+
+            if(personEV.at(i).event.contains(enter)) {
+
+                enter.indexIn(personEV[i].event);
+                 eventEnter = enter.capturedTexts();
+
+                if(personEV.at(i).event.contains(exit)){
+
+                 exit.indexIn(personEV[i].event);
+                 eventExit = exit.capturedTexts();
+
+                }
+            }
+
+             // analytic first input, last output
         }
 
+    }
+    for(int i = 0; i < eventEnter.length(); i++)
+    {
+        qDebug() << "enter " << eventEnter.at(i);
+    }
+    for(int i = 0; i < eventExit.length(); i++)
+    {
+        qDebug() << "exit " << eventExit.at(i);
     }
 
     qDebug() << "end";
