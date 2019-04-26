@@ -123,11 +123,14 @@ void SBdata::processing()
 
     qDebug() << "start";
     int lastDay = this->targetDate.daysInMonth();
-
+    this->vOut.clear();
     qDebug() << "last day: " << lastDay;
     for(int i = 0; i < fioList.size(); i++)
     {
         qDebug() << "person " << fioList.at(i);
+        OutputData outD;
+
+        outD.person = fioList.at(i);
 
         for( int k = 1 ; k <= lastDay; k++){
 
@@ -189,13 +192,15 @@ void SBdata::processing()
 //            qDebug() << "firstEnter " << firstEnter.time.toString(FORMAT_TIME);
 //            qDebug() << "lastExit" << lastExit.time.toString(FORMAT_TIME);
 
+             outD.vFirstEnter.append(firstEnter.time);
+             outD.vLastExit.append(lastExit.time);
 
              // analytic first input, last output
         }
-
+        vOut.append(outD);
     }
 
 
     qDebug() << "end";
-
+    qDebug() << vOut.size();
 }

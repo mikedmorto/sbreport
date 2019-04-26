@@ -23,7 +23,12 @@ struct EventInfo
         isNull = true;
     }
 };
-
+struct OutputData
+{
+    QString person;
+    QVector<QTime> vFirstEnter;
+    QVector<QTime> vLastExit;
+};
 
 class SBdata
 {
@@ -31,7 +36,7 @@ private:
     QStringList fioList;
     QString lastError;
     QVector<EventInfo> evenVec;
-
+    QVector<OutputData> vOut;
     QDate targetDate;
 
 
