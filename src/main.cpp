@@ -108,6 +108,13 @@ int main(int argc, char *argv[])
 
     data.processing();
 
+    if(!data.saveOutput(cfg.getOutputPath()))
+    {
+        qDebug() << "Main error = " << data.getLastError();
+        exit(1);
+    }
+
+
 
     exit(0);
     return a.exec();

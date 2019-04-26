@@ -48,7 +48,8 @@ public:
     void clearFio();
     bool loadEvent(const QString &path, const QDate &targetDate);
     void clearEvent();
-    void processing();
+    void processing();   
+    bool saveOutput(const QString savePath);
 
 };
 }

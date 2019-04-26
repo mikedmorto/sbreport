@@ -204,3 +204,20 @@ void SBdata::processing()
     qDebug() << "end";
     qDebug() << vOut.size();
 }
+
+bool SBdata::saveOutput(const QString savePath)
+{
+    for(int i = 0; i < vOut.size(); i++){
+        QString ret;
+        ret.append(vOut.at(i).person);
+        for(int j = 0; j < vOut.at(i).vFirstEnter.size(); j++){
+            ret.append(",");
+             ret.append(vOut.at(i).vFirstEnter.at(j).toString(FORMAT_TIME));
+             ret.append("-");
+             ret.append(vOut.at(i).vLastExit.at(j).toString(FORMAT_TIME));
+
+        }
+    qDebug() << ret;
+    }
+    return true;
+}
