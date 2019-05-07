@@ -6,7 +6,7 @@ endif()
 set(__get_git_version INCLUDED)
 
 function(get_git_version var)
-    set (APPVER "0.0.0")
+    set (APPVER "0.9.0-B")
   if(GIT_EXECUTABLE)
       # Looking for tags
       execute_process(COMMAND ${GIT_EXECUTABLE} describe --match "v[0-9]*.[0-9]*.[0-9]*" --abbrev=8
