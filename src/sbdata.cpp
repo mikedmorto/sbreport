@@ -143,12 +143,17 @@ void SBdata::processing()
                 if(evenVec.at(j).person == fioList.at(i)
                         and evenVec.at(j).date.day() == k ){
                 // qDebug()<<"OKKKK";
-                    personEV.append(evenVec.at(j));
+
+                   // if(!(evenVec.at(j).event.isEmpty())) {
+                         personEV.append(evenVec.at(j));
+                   // }
 
                 }
 
             }
-            qDebug() << QString("Day %1 event size %2").arg(k).arg(personEV.size());
+            //if(personEV.size() != 0) {
+                qDebug() << QString("Day %1 event size %2").arg(k).arg(personEV.size());
+            //}
             EventInfo firstEnter;
             EventInfo lastExit;
 
@@ -207,6 +212,7 @@ void SBdata::processing()
 
 bool SBdata::saveOutput(const QString savePath)
 {
+    //если на выводе -, то отслеживать по условию первого входа, последнего выхода, заменять на ноль
     for(int i = 0; i < vOut.size(); i++){
         QString ret;
         ret.append(vOut.at(i).person);
@@ -215,9 +221,9 @@ bool SBdata::saveOutput(const QString savePath)
              ret.append(vOut.at(i).vFirstEnter.at(j).toString(FORMAT_TIME));
              ret.append("-");
              ret.append(vOut.at(i).vLastExit.at(j).toString(FORMAT_TIME));
-
         }
     qDebug() << ret;
     }
     return true;
+
 }

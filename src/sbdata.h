@@ -40,7 +40,6 @@ private:
     QDate targetDate;
 
 
-
 public:
     SBdata();
     const QString getLastError();
