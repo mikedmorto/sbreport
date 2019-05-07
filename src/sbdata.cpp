@@ -213,17 +213,30 @@ void SBdata::processing()
 bool SBdata::saveOutput(const QString savePath)
 {
     //если на выводе -, то отслеживать по условию первого входа, последнего выхода, заменять на ноль
+    QFile fo;
+    QString fname = savePath;
+    fo.setFileName(fname);
+    if(!fo.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)){
+       this->lastError = "cannot open file " + fname + " because of ";
+       this->lastError += fo.errorString();
+       return false;
+    }
+
     for(int i = 0; i < vOut.size(); i++){
         QString ret;
+
         ret.append(vOut.at(i).person);
         for(int j = 0; j < vOut.at(i).vFirstEnter.size(); j++){
             ret.append(",");
-             ret.append(vOut.at(i).vFirstEnter.at(j).toString(FORMAT_TIME));
+             ret.append(vOut.at(i).vFirstEnter.at(j).toString("hh:mm:ss"));
              ret.append("-");
-             ret.append(vOut.at(i).vLastExit.at(j).toString(FORMAT_TIME));
+             ret.append(vOut.at(i).vLastExit.at(j).toString("hh:mm:ss"));
+
         }
-    qDebug() << ret;
+    ret.append("\n");
+    fo.write(ret.toUtf8());
     }
+    fo.close();
     return true;
 
 }
