@@ -42,35 +42,43 @@ int main(int argc, char *argv[])
     parser.process(a);
 
     SBconfig cfg;
+    SB::SBdata data;
 
     if(parser.isSet("f"))
     {
         cfg.setFioPath(parser.value("f"));
-        qDebug()<<"fio-file = " << cfg.getFioPath();
+         QTextStream(stdout) << data.getCurrentTime() << "fio-file = " << cfg.getFioPath() << endl;
+        //qDebug()<<"fio-file = " << cfg.getFioPath();
     }
     if(parser.isSet("t"))
     {
         cfg.setTargetPath(parser.value("t"));
-        qDebug()<<"target-file = " << cfg.getTargetPath();
+         QTextStream(stdout)<< data.getCurrentTime() << "target-file = " << cfg.getTargetPath() << endl;
+        //qDebug()<<"target-file = " << cfg.getTargetPath();
     }
     if(parser.isSet("o"))
     {
         cfg.setOutputPath(parser.value("o"));
-        qDebug()<<"output-file = " << cfg.getOutputPath();
+         QTextStream(stdout)<< data.getCurrentTime() << "output-file = " << cfg.getOutputPath() << endl;
+        //qDebug()<<"output-file = " << cfg.getOutputPath();
     }
     if(parser.isSet("m"))
     {
         cfg.setTargetDate(parser.value("m"));
 
         if(!cfg.isValidDate()){
-            QTextStream(stderr)<< parser.value("m") <<" - invalid date time format " << endl;
+            QTextStream(stdout)<< data.getCurrentTime() << parser.value("m") <<" - invalid date time format " << endl;
+            QTextStream(stderr)<< data.getCurrentTime() << parser.value("m") <<" - invalid date time format " << endl;
             exit(1);
         }
+
+
+
     }
     if(parser.isSet("version"))
     {
+        QTextStream(stdout)<< data.getCurrentTime() << "output-file = " << a.applicationVersion() << endl;
         //qDebug()<<a.applicationVersion();
-        QTextStream(stdout)<< a.applicationVersion() << endl;
         exit(0);
     }
 
@@ -86,21 +94,27 @@ int main(int argc, char *argv[])
 
     if(!isOK){
         // fail params
-        qDebug()<<"Failure params";
+        QTextStream(stdout)<< data.getCurrentTime() << "Failure params" << endl;
+        QTextStream(stderr)<< data.getCurrentTime() << "Failure params" << endl;
+        //qDebug()<<"Failure params";
         exit(1);
     }
 
 
 
-    SB::SBdata data;
+
     if(!data.loadFio(cfg.getFioPath())){
-        qDebug() << "Main error = " << data.getLastError();
+        QTextStream(stdout)<< data.getCurrentTime() << "Main error = " << data.getLastError();
+        QTextStream(stderr)<< data.getCurrentTime() << "Main error = " << data.getLastError();
+        //qDebug() << "Main error = " << data.getLastError();
         exit(1);
     }
 
     if(!data.loadEvent(cfg.getTargetPath(), cfg.getTargetDate()))
     {
-        qDebug() << "Main error = " << data.getLastError();
+        QTextStream(stdout)<< data.getCurrentTime() << "Main error = " << data.getLastError();
+        QTextStream(stderr)<< data.getCurrentTime() << "Main error = " << data.getLastError();
+        //qDebug() << "Main error = " << data.getLastError();
         exit(1);
     }
 
@@ -110,7 +124,9 @@ int main(int argc, char *argv[])
 
     if(!data.saveOutput(cfg.getOutputPath()))
     {
-        qDebug() << "Main error = " << data.getLastError();
+        QTextStream(stdout)<< data.getCurrentTime() << "Main error = " << data.getLastError();
+        QTextStream(stderr)<< data.getCurrentTime() << "Main error = " << data.getLastError();
+        //qDebug() << "Main error = " << data.getLastError();
         exit(1);
     }
 

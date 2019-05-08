@@ -10,6 +10,7 @@
 #include <QVector>
 #include <QRegExp>
 #include "def.h"
+#include <QProcess>
 
 namespace SB {
 struct EventInfo
@@ -49,6 +50,7 @@ public:
     void clearEvent();
     void processing();   
     bool saveOutput(const QString savePath);
+    QString getCurrentTime();
 
 };
 }

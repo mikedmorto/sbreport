@@ -14,13 +14,13 @@ const QString SBdata::getLastError(){
 bool SBdata::loadFio(const QString &path)
 {
     this->fioList.clear();
-    qDebug() << "opening file " << path;
+    //qDebug() << "opening file " << path;
     QFile fioFile;
     fioFile.setFileName(path);
     if(!fioFile.open(QIODevice::ReadOnly | QIODevice::Text)){
         this->lastError = "cannot open file " + path + " because of ";
         this->lastError += fioFile.errorString();
-         qDebug() << this->lastError;
+         //qDebug() << this->lastError;
 
          return false;
     }
@@ -32,12 +32,12 @@ bool SBdata::loadFio(const QString &path)
 
     while(!in.atEnd()){
         QString line = in.readLine();
-        qDebug() << "The current string " << line << endl;
+        //qDebug() << "The current string " << line << endl;
         this->fioList.append(line);
     }
 
-    qDebug() << fioList;
-    qDebug() << "closing the file" + path;
+    //qDebug() << fioList;
+    //qDebug() << "closing the file" + path;
     fioFile.close();
 
     return true;
@@ -50,7 +50,7 @@ void SBdata::clearFio()
 
 bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
 {
-    qDebug()<<"Load event start";
+    //qDebug()<<"Load event start";
     this->clearEvent();
     QFile eventFile;
 
@@ -60,17 +60,17 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
      if(!eventFile.open(QIODevice::ReadOnly | QIODevice::Text)){
          this->lastError = "cannot open file " + path + " because of ";
          this->lastError += eventFile.errorString();
-          qDebug() << this->lastError;
+          //qDebug() << this->lastError;
 
           return false;
      }
      QTextStream in(&eventFile);
      in.setCodec("UTF-8");
-     qDebug()<<"start cycle of loading";
+     //qDebug()<<"start cycle of loading";
      // todo : delete this out for debug
      QTextStream out(stdout);
      out.setCodec("UTF-8");
-     ///////
+
 
 
      while(!in.atEnd()){
@@ -106,8 +106,8 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
         }
 
      }
-     qDebug()<< "evenVec size == " << evenVec.size();
-     qDebug() <<"end load event file";
+     //qDebug()<< "evenVec size == " << evenVec.size();
+     //qDebug() <<"end load event file";
     return true;
 }
 void SBdata::clearEvent()
@@ -121,13 +121,13 @@ void SBdata::processing()
     QRegExp regExit ("^([0-9]*|парковка):Выход.*$");
 
 
-    qDebug() << "start";
+    //qDebug() << "start";
     int lastDay = this->targetDate.daysInMonth();
     this->vOut.clear();
-    qDebug() << "last day: " << lastDay;
+    //qDebug() << "last day: " << lastDay;
     for(int i = 0; i < fioList.size(); i++)
     {
-        qDebug() << "person " << fioList.at(i);
+        //qDebug() << "person " << fioList.at(i);
         OutputData outD;
 
         outD.person = fioList.at(i);
@@ -152,7 +152,7 @@ void SBdata::processing()
 
             }
             //if(personEV.size() != 0) {
-                qDebug() << QString("Day %1 event size %2").arg(k).arg(personEV.size());
+               // qDebug() << QString("Day %1 event size %2").arg(k).arg(personEV.size());
             //}
             EventInfo firstEnter;
             EventInfo lastExit;
@@ -206,8 +206,8 @@ void SBdata::processing()
     }
 
 
-    qDebug() << "end";
-    qDebug() << vOut.size();
+    //qDebug() << "end";
+    //qDebug() << vOut.size();
 }
 
 bool SBdata::saveOutput(const QString savePath)
@@ -239,4 +239,10 @@ bool SBdata::saveOutput(const QString savePath)
     fo.close();
     return true;
 
+}
+
+QString SBdata::getCurrentTime()
+{
+    QString strCurretTime = QTime::currentTime().toString("YYYY-MM-DDThh:mm:ss");
+    return strCurretTime;
 }
