@@ -22,16 +22,16 @@ int main(int argc, char *argv[])
                                       QCoreApplication::translate("main", "path"));
 
     QCommandLineOption target_fileOption(QStringList() << "t" << "target-file",
-                                      QCoreApplication::translate("main", "Path to target file <path>."),
-                                      QCoreApplication::translate("main", "path"));
+                                         QCoreApplication::translate("main", "Path to target file <path>."),
+                                         QCoreApplication::translate("main", "path"));
 
     QCommandLineOption output_fileOption(QStringList() << "o" << "output-file",
-                                      QCoreApplication::translate("main", "Path to output file <path>."),
-                                      QCoreApplication::translate("main", "path"));
+                                         QCoreApplication::translate("main", "Path to output file <path>."),
+                                         QCoreApplication::translate("main", "path"));
 
     QCommandLineOption target_month(QStringList() << "m" << "target-month",
-                                      QCoreApplication::translate("main", "Target month format MM.yyyy like 12.2012"),
-                                      QCoreApplication::translate("main", "month"));
+                                    QCoreApplication::translate("main", "Target month format MM.yyyy like 12.2012"),
+                                    QCoreApplication::translate("main", "month"));
     parser.addOption(fio_fileOption);
     parser.addOption(target_fileOption);
     parser.addOption(output_fileOption);
@@ -40,20 +40,22 @@ int main(int argc, char *argv[])
 
     SBconfig cfg;
     SB::SBdata data;
+
     if(parser.isSet("f")){
         cfg.setFioPath(parser.value("f"));
-         QTextStream(stdout) << data.getCurrentTime() << "fio-file = " << cfg.getFioPath() << endl;
-//        qDebug()<<"fio-file = " << cfg.getFioPath();
+        QTextStream(stdout) << data.getCurrentTime() << "fio-file = " << cfg.getFioPath() << endl;
+        //           qDebug()<<"fio-file = " << cfg.getFioPath();
     }
     if(parser.isSet("t")){
         cfg.setTargetPath(parser.value("t"));
-         QTextStream(stdout)<< data.getCurrentTime() << "target-file = " << cfg.getTargetPath() << endl;
-//        qDebug()<<"target-file = " << cfg.getTargetPath();
+        QTextStream(stdout)<< data.getCurrentTime() << "target-file = " << cfg.getTargetPath() << endl;
+        //          qDebug()<<"target-file = " << cfg.getTargetPath();
     }
+
     if(parser.isSet("o")){
         cfg.setOutputPath(parser.value("o"));
-         QTextStream(stdout)<< data.getCurrentTime() << "output-file = " << cfg.getOutputPath() << endl;
-//       qDebug()<<"output-file = " << cfg.getOutputPath();
+        QTextStream(stdout)<< data.getCurrentTime() << "output-file = " << cfg.getOutputPath() << endl;
+        //       qDebug()<<"output-file = " << cfg.getOutputPath();
     }
     if(parser.isSet("m")){
         cfg.setTargetDate(parser.value("m"));
@@ -64,43 +66,44 @@ int main(int argc, char *argv[])
     }
     if(parser.isSet("version")){
         QTextStream(stdout)<< data.getCurrentTime() << "Current version " << a.applicationVersion() << endl;
-//        qDebug()<<a.applicationVersion();
+        //        qDebug()<<a.applicationVersion();
         exit(0);
     }
-//     compare keys
+
+    //     compare keys
     bool isOK = true;
     if(parser.isSet("f")){
         if(!parser.isSet("t"))
-                isOK = false;
-//         others
+            isOK = false;
+        //         others
         if(!parser.isSet("m"))
             isOK = false;
     }
     if(!isOK){
-//         fail params
+        //         fail params
         QTextStream(stderr)<< data.getCurrentTime() << "Failure params" << endl;
-//        qDebug()<<"Failure params";
+        //        qDebug()<<"Failure params";
         exit(1);
     }
     if(!data.loadFio(cfg.getFioPath())){
         QTextStream(stderr)<< data.getCurrentTime() << "Main error = " << data.getLastError();
-//        qDebug() << "Main error = " << data.getLastError();
+        //        qDebug() << "Main error = " << data.getLastError();
         exit(1);
     }
 
     if(!data.loadEvent(cfg.getTargetPath(), cfg.getTargetDate()))
     {
         QTextStream(stderr)<< data.getCurrentTime() << "Main error = " << data.getLastError();
-//        qDebug() << "Main error = " << data.getLastError();
+        //        qDebug() << "Main error = " << data.getLastError();
         exit(1);
     }
 
-//     processing
+    //     processing
     data.processing();
     if(!data.saveOutput(cfg.getOutputPath()))
     {
         QTextStream(stderr)<< data.getCurrentTime() << "Main error = " << data.getLastError();
-//        qDebug() << "Main error = " << data.getLastError();
+        //        qDebug() << "Main error = " << data.getLastError();
         exit(1);
     }
     exit(0);
