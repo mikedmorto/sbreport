@@ -11,6 +11,7 @@
 #include <QRegExp>
 #include "def.h"
 #include <QProcess>
+#include <QFileInfo>
 
 namespace SB {
 struct EventInfo
@@ -48,10 +49,11 @@ public:
     void clearFio();
     bool loadEvent(const QString &path, const QDate &targetDate);
     void clearEvent();
+    bool fileExists(QString path);
     void processing();   
     bool saveOutput(const QString savePath);
     QString getCurrentTime();
-
+    QString getAbsoluteFilePath(QString fileName);
 };
 }
 

@@ -40,75 +40,91 @@ int main(int argc, char *argv[])
 
     SBconfig cfg;
     SB::SBdata data;
+    bool isOK = true;
     if(parser.optionNames().empty()){
-        QTextStream(stderr)<< data.getCurrentTime() << "[error] " << "Run without parametrs\n";
+        QTextStream(stderr)<< data.getCurrentTime() << "[error] " << "Run without params\n";
         exit(1);
     }
     else{
         if(parser.isSet("f")){
             cfg.setFioPath(parser.value("f"));
-            QTextStream(stdout) << data.getCurrentTime() << "fio-file = " << cfg.getFioPath() << endl;
-            //           qDebug()<<"fio-file = " << cfg.getFioPath();
+            if(!(data.fileExists(cfg.getFioPath()))){
+                QTextStream(stderr) << data.getCurrentTime() << "[error] " << "Fio file's doesn't exist\n";
+                isOK = false;
+            }else{
+                QTextStream(stdout) << data.getCurrentTime() << "[info] " << "Reading of fio-file, fio-file path = "
+                                    << data.getAbsoluteFilePath(cfg.getFioPath()) << endl;
+                //            qDebug()<<"fio-file = " << cfg.getFioPath();
+            }
+        }else{
+            isOK = false;
         }
         if(parser.isSet("t")){
             cfg.setTargetPath(parser.value("t"));
-            QTextStream(stdout)<< data.getCurrentTime() << "target-file = " << cfg.getTargetPath() << endl;
-            //          qDebug()<<"target-file = " << cfg.getTargetPath();
+            if(!(data.fileExists(cfg.getTargetPath()))){
+                QTextStream(stderr) << data.getCurrentTime() << "[error] " << "Target file's doesn't exist\n";
+                isOK = false;
+            }else{
+                QTextStream(stdout)<< data.getCurrentTime() << "[info] " << "Reading of target-file, target-file path = "
+                                   << data.getAbsoluteFilePath(cfg.getTargetPath()) << endl;
+                //          qDebug()<<"target-file = " << cfg.getTargetPath();
+            }
+        }else{
+            isOK = false;
         }
-
         if(parser.isSet("o")){
             cfg.setOutputPath(parser.value("o"));
-            QTextStream(stdout)<< data.getCurrentTime() << "output-file = " << cfg.getOutputPath() << endl;
-            //       qDebug()<<"output-file = " << cfg.getOutputPath();
+            if(parser.value("o").isEmpty()){
+                QTextStream(stderr)<< data.getCurrentTime() << "[error] " << "Target file is empty\n";
+                isOK = false;
+            } else{
+                QTextStream(stdout)<< data.getCurrentTime() << "[info] " << "Creating of output-file, output-file path  = "
+                                   << data.getAbsoluteFilePath(cfg.getOutputPath()) << endl;
+                //       qDebug()<<"output-file = " << cfg.getOutputPath();
+            }
+        }else{
+            isOK = false;
         }
         if(parser.isSet("m")){
             cfg.setTargetDate(parser.value("m"));
             if(!cfg.isValidDate()){
-                QTextStream(stderr)<< data.getCurrentTime() << parser.value("m") <<" - invalid date time format " << endl;
-                exit(1);
+                QTextStream(stderr)<< data.getCurrentTime() << "[error] " << parser.value("m") <<" Invalid date time format " << endl;
+                isOK = false;
             }
+            QTextStream(stdout)<< data.getCurrentTime() << "[info] " << "Set time's format, format = " << "yyyy-MM-dd hh:mm:ss " << endl;
+        }else{
+            isOK = false;
         }
         if(parser.isSet("version")){
-            QTextStream(stdout)<< data.getCurrentTime() << "Current version " << a.applicationVersion() << endl;
+            QTextStream(stdout)<< data.getCurrentTime() << "[info] " << "Current version " << a.applicationVersion() << endl;
             //        qDebug()<<a.applicationVersion();
-            exit(0);
         }
-    }
-    //     compare keys
-    bool isOK = true;
-    if(parser.isSet("f")){
-        if(!parser.isSet("t"))
-            isOK = false;
-        //         others
-        if(!parser.isSet("m"))
-            isOK = false;
     }
     if(!isOK){
         //         fail params
-        QTextStream(stderr)<< data.getCurrentTime() << "Failure params" << endl;
+        QTextStream(stderr)<< data.getCurrentTime() << "[error] " << "Failure params" << endl;
         //        qDebug()<<"Failure params";
         exit(1);
-    }
-    if(!data.loadFio(cfg.getFioPath())){
-        QTextStream(stderr)<< data.getCurrentTime() << "Main error = " << data.getLastError();
-        //        qDebug() << "Main error = " << data.getLastError();
-        exit(1);
-    }
-
-    if(!data.loadEvent(cfg.getTargetPath(), cfg.getTargetDate()))
-    {
-        QTextStream(stderr)<< data.getCurrentTime() << "Main error = " << data.getLastError();
-        //        qDebug() << "Main error = " << data.getLastError();
-        exit(1);
-    }
-
-    //     processing
-    data.processing();
-    if(!data.saveOutput(cfg.getOutputPath()))
-    {
-        QTextStream(stderr)<< data.getCurrentTime() << "Main error = " << data.getLastError();
-        //        qDebug() << "Main error = " << data.getLastError();
-        exit(1);
+    } else{
+        //     processing
+        data.processing();
+        if(!data.loadFio(cfg.getFioPath())){
+            QTextStream(stderr)<< data.getCurrentTime() << "[error] " << "Main error of fioFile = " << data.getLastError();
+            //        qDebug() << "Main error = " << data.getLastError();
+            exit(1);
+        }
+        if(!data.loadEvent(cfg.getTargetPath(), cfg.getTargetDate()))
+        {
+            QTextStream(stderr)<< data.getCurrentTime() << "[error] " << "Main error of targetFile = " << data.getLastError();
+            //        qDebug() << "Main error = " << data.getLastError();
+            exit(1);
+        }
+        if(!data.saveOutput(cfg.getOutputPath()))
+        {
+            QTextStream(stderr)<< data.getCurrentTime() << "[error] " << "Main error of outputFile = " << data.getLastError();
+            //        qDebug() << "Main error = " << data.getLastError();
+            exit(1);
+        }
     }
     exit(0);
     return a.exec();

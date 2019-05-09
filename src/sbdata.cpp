@@ -18,7 +18,7 @@ bool SBdata::loadFio(const QString &path)
     QFile fioFile;
     fioFile.setFileName(path);
     if(!fioFile.open(QIODevice::ReadOnly | QIODevice::Text)){
-        this->lastError = "cannot open file " + path + ",because of ";
+        this->lastError = "cannot open file " + getAbsoluteFilePath(path) + ", because of ";
         this->lastError += fioFile.errorString() + "\n";
         //         qDebug() << this->lastError;
         return false;
@@ -49,7 +49,7 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
     this->targetDate = targetDate;
     eventFile.setFileName(path);
     if(!eventFile.open(QIODevice::ReadOnly | QIODevice::Text)){
-        this->lastError = "cannot open file " + path + "because of ";
+        this->lastError = "cannot open file " + getAbsoluteFilePath(path)  + ", because of ";
         this->lastError += eventFile.errorString() + "\n";
         //       qDebug() << this->lastError;
         return false;
@@ -97,6 +97,17 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
 void SBdata::clearEvent()
 {
     this->evenVec.clear();
+}
+
+bool SBdata::fileExists(QString path)
+{
+    QFileInfo check_file(path);
+    // check if file exists and if yes: Is it really a file and no directory?
+    if (check_file.exists() && check_file.isFile()) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void SBdata::processing()
@@ -172,7 +183,7 @@ bool SBdata::saveOutput(const QString savePath)
     QString fname = savePath;
     fo.setFileName(fname);
     if(!fo.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)){
-        this->lastError = "cannot open file " + fname + " because of ";
+        this->lastError = "cannot open file " + getAbsoluteFilePath(fname)  + ", because of ";
         this->lastError += fo.errorString() + "\n";
         return false;
     }
@@ -193,6 +204,12 @@ bool SBdata::saveOutput(const QString savePath)
 }
 QString SBdata::getCurrentTime()
 {
-    QString strCurretTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss ");
-    return strCurretTime;
+    QString strCurrentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss ");
+    return strCurrentTime;
+}
+
+QString SBdata::getAbsoluteFilePath(QString fileName)
+{
+    QFileInfo infoTargetFile(fileName);
+    return infoTargetFile.absoluteFilePath();
 }
