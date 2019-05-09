@@ -40,36 +40,40 @@ int main(int argc, char *argv[])
 
     SBconfig cfg;
     SB::SBdata data;
+    if(parser.optionNames().empty()){
+        QTextStream(stderr)<< data.getCurrentTime() << "[error] " << "Run without parametrs\n";
+        exit(1);
+    }
+    else{
+        if(parser.isSet("f")){
+            cfg.setFioPath(parser.value("f"));
+            QTextStream(stdout) << data.getCurrentTime() << "fio-file = " << cfg.getFioPath() << endl;
+            //           qDebug()<<"fio-file = " << cfg.getFioPath();
+        }
+        if(parser.isSet("t")){
+            cfg.setTargetPath(parser.value("t"));
+            QTextStream(stdout)<< data.getCurrentTime() << "target-file = " << cfg.getTargetPath() << endl;
+            //          qDebug()<<"target-file = " << cfg.getTargetPath();
+        }
 
-    if(parser.isSet("f")){
-        cfg.setFioPath(parser.value("f"));
-        QTextStream(stdout) << data.getCurrentTime() << "fio-file = " << cfg.getFioPath() << endl;
-        //           qDebug()<<"fio-file = " << cfg.getFioPath();
-    }
-    if(parser.isSet("t")){
-        cfg.setTargetPath(parser.value("t"));
-        QTextStream(stdout)<< data.getCurrentTime() << "target-file = " << cfg.getTargetPath() << endl;
-        //          qDebug()<<"target-file = " << cfg.getTargetPath();
-    }
-
-    if(parser.isSet("o")){
-        cfg.setOutputPath(parser.value("o"));
-        QTextStream(stdout)<< data.getCurrentTime() << "output-file = " << cfg.getOutputPath() << endl;
-        //       qDebug()<<"output-file = " << cfg.getOutputPath();
-    }
-    if(parser.isSet("m")){
-        cfg.setTargetDate(parser.value("m"));
-        if(!cfg.isValidDate()){
-            QTextStream(stderr)<< data.getCurrentTime() << parser.value("m") <<" - invalid date time format " << endl;
-            exit(1);
+        if(parser.isSet("o")){
+            cfg.setOutputPath(parser.value("o"));
+            QTextStream(stdout)<< data.getCurrentTime() << "output-file = " << cfg.getOutputPath() << endl;
+            //       qDebug()<<"output-file = " << cfg.getOutputPath();
+        }
+        if(parser.isSet("m")){
+            cfg.setTargetDate(parser.value("m"));
+            if(!cfg.isValidDate()){
+                QTextStream(stderr)<< data.getCurrentTime() << parser.value("m") <<" - invalid date time format " << endl;
+                exit(1);
+            }
+        }
+        if(parser.isSet("version")){
+            QTextStream(stdout)<< data.getCurrentTime() << "Current version " << a.applicationVersion() << endl;
+            //        qDebug()<<a.applicationVersion();
+            exit(0);
         }
     }
-    if(parser.isSet("version")){
-        QTextStream(stdout)<< data.getCurrentTime() << "Current version " << a.applicationVersion() << endl;
-        //        qDebug()<<a.applicationVersion();
-        exit(0);
-    }
-
     //     compare keys
     bool isOK = true;
     if(parser.isSet("f")){
