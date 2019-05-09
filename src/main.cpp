@@ -43,7 +43,6 @@ int main(int argc, char *argv[])
 
     SBconfig cfg;
     SB::SBdata data;
-
     if(parser.isSet("f"))
     {
         cfg.setFioPath(parser.value("f"));
@@ -71,16 +70,14 @@ int main(int argc, char *argv[])
             QTextStream(stderr)<< data.getCurrentTime() << parser.value("m") <<" - invalid date time format " << endl;
             exit(1);
         }
-
-
-
     }
     if(parser.isSet("version"))
     {
-        QTextStream(stdout)<< data.getCurrentTime() << "output-file = " << a.applicationVersion() << endl;
+        QTextStream(stdout)<< data.getCurrentTime() << "Current version " << a.applicationVersion() << endl;
         //qDebug()<<a.applicationVersion();
         exit(0);
     }
+
 
     // compare keys
     bool isOK = true;

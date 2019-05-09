@@ -243,6 +243,6 @@ bool SBdata::saveOutput(const QString savePath)
 
 QString SBdata::getCurrentTime()
 {
-    QString strCurretTime = QTime::currentTime().toString("YYYY-MM-DDThh:mm:ss");
+    QString strCurretTime = QDateTime::currentDateTime().toString("yyyy-MM-ddThh:mm:ss ");
     return strCurretTime;
 }
