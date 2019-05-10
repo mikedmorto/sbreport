@@ -90,8 +90,10 @@ int main(int argc, char *argv[])
             if(!cfg.isValidDate()){
                 QTextStream(stderr)<< data.getCurrentTime() << "[error] " << parser.value("m") <<" Invalid date time format " << endl;
                 isOK = false;
+            }else{
+                QTextStream(stdout)<< data.getCurrentTime() << "[info] " << "Set time's format, format = " << "yyyy-MM-dd hh:mm:ss " << endl;
             }
-            QTextStream(stdout)<< data.getCurrentTime() << "[info] " << "Set time's format, format = " << "yyyy-MM-dd hh:mm:ss " << endl;
+
         }else{
             isOK = false;
         }
