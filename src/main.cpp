@@ -4,16 +4,20 @@
 #include "def.h"
 #include "sbconfig.h"
 #include "sbdata.h"
+#include "mlog.h"
 
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
+    MLog log;
     QCoreApplication a(argc, argv);
     a.setApplicationName(APP_NAME);
     a.setApplicationVersion(GIT_VERSION);
     a.setOrganizationName(CORP_NAME);
+
+    log.slotPut("MAIN", MLog::logInfo, QString("Start application %1 %2").arg(APP_NAME).arg(GIT_VERSION));
 
     QCommandLineParser parser;
     parser.addHelpOption();
@@ -43,95 +47,89 @@ int main(int argc, char *argv[])
 
     SBconfig cfg;
     SB::SBdata data;
+    if(parser.isSet("version"))
+    {
+        QTextStream(stdout)<<"application " << a.applicationName() << " version " << a.applicationVersion() << endl;
+        exit(0);
+    }
 
     if(parser.isSet("f"))
     {
         cfg.setFioPath(parser.value("f"));
-         QTextStream(stdout) << data.getCurrentTime() << "fio-file = " << cfg.getFioPath() << endl;
-        //qDebug()<<"fio-file = " << cfg.getFioPath();
+        log.slotPut("MAIN", MLog::logDebug, QString("Param fio-file = \"%1\"").arg(cfg.getFioPath()));
     }
     if(parser.isSet("t"))
     {
         cfg.setTargetPath(parser.value("t"));
-         QTextStream(stdout)<< data.getCurrentTime() << "target-file = " << cfg.getTargetPath() << endl;
-        //qDebug()<<"target-file = " << cfg.getTargetPath();
+        log.slotPut("MAIN", MLog::logDebug, QString("Param target-file = \"%1\"").arg(cfg.getTargetPath()));
     }
     if(parser.isSet("o"))
     {
         cfg.setOutputPath(parser.value("o"));
-         QTextStream(stdout)<< data.getCurrentTime() << "output-file = " << cfg.getOutputPath() << endl;
-        //qDebug()<<"output-file = " << cfg.getOutputPath();
+        log.slotPut("MAIN", MLog::logDebug, QString("Param output-file = \"%1\"").arg(cfg.getOutputPath()));
     }
     if(parser.isSet("m"))
     {
         cfg.setTargetDate(parser.value("m"));
-
+        log.slotPut("MAIN", MLog::logDebug, QString("Param date = \"%1\"").arg(cfg.getTargetDate().toString("MM.yyyy")));
         if(!cfg.isValidDate()){
-            QTextStream(stdout)<< data.getCurrentTime() << parser.value("m") <<" - invalid date time format " << endl;
-            QTextStream(stderr)<< data.getCurrentTime() << parser.value("m") <<" - invalid date time format " << endl;
+            log.slotPut("MAIN", MLog::logAlert, QString("invalid date time format. Exit."));
             exit(1);
         }
-
-
-
-    }
-    if(parser.isSet("version"))
-    {
-        QTextStream(stdout)<< data.getCurrentTime() << "output-file = " << a.applicationVersion() << endl;
-        //qDebug()<<a.applicationVersion();
-        exit(0);
     }
 
-    // compare keys
-    bool isOK = true;
-    if(parser.isSet("f")){
-        if(!parser.isSet("t"))
-                isOK = false;
-        // others
-        if(!parser.isSet("m"))
-            isOK = false;
-    }
 
-    if(!isOK){
-        // fail params
-        QTextStream(stdout)<< data.getCurrentTime() << "Failure params" << endl;
-        QTextStream(stderr)<< data.getCurrentTime() << "Failure params" << endl;
-        //qDebug()<<"Failure params";
+    // testing parameters
+    if(!parser.isSet("f")){
+        log.slotPut("MAIN", MLog::logAlert, QString("Parameter -f is not set. Exit."));
+        exit(1);
+    }
+    if(!parser.isSet("t")){
+        log.slotPut("MAIN", MLog::logAlert, QString("Parameter -t is not set. Exit."));
+        exit(1);
+    }
+    if(!parser.isSet("o")){
+        log.slotPut("MAIN", MLog::logAlert, QString("Parameter -o is not set. Exit."));
+        exit(1);
+    }
+    if(!parser.isSet("m")){
+        log.slotPut("MAIN", MLog::logAlert, QString("Parameter -m is not set. Exit."));
         exit(1);
     }
 
 
-
-
+    log.slotPut("MAIN", MLog::logInfo, QString("Start load fio file"));
     if(!data.loadFio(cfg.getFioPath())){
-        QTextStream(stdout)<< data.getCurrentTime() << "Main error = " << data.getLastError();
-        QTextStream(stderr)<< data.getCurrentTime() << "Main error = " << data.getLastError();
-        //qDebug() << "Main error = " << data.getLastError();
-        exit(1);
+        log.slotPut("MAIN", MLog::logAlert, QString("Failure load fio file because of %1").arg(data.getLastError()));
+        exit(2);
     }
+    log.slotPut("MAIN", MLog::logInfo, QString("Stop load fio file"));
 
+
+    log.slotPut("MAIN", MLog::logInfo, QString("Start load target file"));
     if(!data.loadEvent(cfg.getTargetPath(), cfg.getTargetDate()))
     {
-        QTextStream(stdout)<< data.getCurrentTime() << "Main error = " << data.getLastError();
-        QTextStream(stderr)<< data.getCurrentTime() << "Main error = " << data.getLastError();
-        //qDebug() << "Main error = " << data.getLastError();
-        exit(1);
+        log.slotPut("MAIN", MLog::logAlert, QString("Failure load target file because of %1").arg(data.getLastError()));
+        exit(3);
     }
+    log.slotPut("MAIN", MLog::logInfo, QString("Stop load target file"));
 
     // processing
-
+    log.slotPut("MAIN", MLog::logInfo, QString("Start processing"));
     data.processing();
+    log.slotPut("MAIN", MLog::logInfo, QString("Stop processing"));
 
+
+    log.slotPut("MAIN", MLog::logInfo, QString("Start write output file"));
     if(!data.saveOutput(cfg.getOutputPath()))
     {
-        QTextStream(stdout)<< data.getCurrentTime() << "Main error = " << data.getLastError();
-        QTextStream(stderr)<< data.getCurrentTime() << "Main error = " << data.getLastError();
-        //qDebug() << "Main error = " << data.getLastError();
-        exit(1);
+        log.slotPut("MAIN", MLog::logAlert, QString("Failure write output file because of %1").arg(data.getLastError()));
+        exit(4);
     }
+    log.slotPut("MAIN", MLog::logInfo, QString("Stop write output file"));
 
 
-
+    log.slotPut("MAIN", MLog::logInfo, QString("Stop application"));
     exit(0);
     return a.exec();
 }
