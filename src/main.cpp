@@ -4,6 +4,7 @@
 #include "def.h"
 #include "sbconfig.h"
 #include "sbdata.h"
+#include "sblogs.h"
 
 using namespace std;
 
@@ -40,7 +41,14 @@ int main(int argc, char *argv[])
 
     SBconfig cfg;
     SB::SBdata data;
+    sblogs logs;
+
     bool isOK = true;
+
+    //if(!(logs.defOfEvent(parser.optionNames()))){
+         //exit(1);
+    //}
+
     if(parser.optionNames().empty()){
         QTextStream(stderr)<< data.getCurrentTime() << "[error] " << "Run without params\n";
         exit(1);
