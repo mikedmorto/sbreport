@@ -65,7 +65,7 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
           return false;
      }
      QTextStream in(&eventFile);
-     in.setCodec("UTF-8");
+     in.setCodec("CP-1251");
      //qDebug()<<"start cycle of loading";
      // todo : delete this out for debug
      QTextStream out(stdout);
