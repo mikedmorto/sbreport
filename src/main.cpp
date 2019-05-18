@@ -41,7 +41,6 @@ int main(int argc, char *argv[])
 
     SBconfig cfg;
     SB::SBdata data;
-    sblogs logs;
 
     bool isOK = true;
 
