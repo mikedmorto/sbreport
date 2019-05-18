@@ -95,6 +95,7 @@ void MLog::slotPut(const QString & owner, MLog::LogLevel level, const QString & 
         if(!this->isFile){
             // файл не открыт, пишем в стандартный вывод
             printf("%s\n",outputText.toStdString().c_str());
+        }else{
             // пишем в лог файл
             QTextStream gg;
             gg.setDevice(&this->logfile);
