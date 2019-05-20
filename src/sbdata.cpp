@@ -55,7 +55,8 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
         return false;
     }
     QTextStream in(&eventFile);
-    in.setCodec("CP-1251");
+    in.setCodec("CP-1251"); // if target-file is CP-1251
+    //in.setCodec("UTF-8"); // if target-file is UTF-8
     //     qDebug()<<"start cycle of loading";
     //     todo : delete this out for debug
     QTextStream out(stdout);
@@ -68,14 +69,12 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
         //      qDebug() << sl;
         if(sl.size() < 6 and sl.size() > 10)
             continue;
-        qDebug() << sl.at(5) << endl;
+        //qDebug() << sl.at(5) << endl;
         //      out<< sl.at(0) << endl;
         QDate tdate = QDate::fromString(sl.at(0),"dd.MM.yyyy");
         if( !((tdate.year() == targetDate.year()) && (tdate.month() == targetDate.month())) )
             continue;
-        if(sl.at(5).contains(QRegExp("^(.*:Вход.*|.*:Выход.*)$"))){
-            //          if(sl.at(5).contains(QRegExp(QString::fromUtf8("^.*\:Вход.*$")))){
-            //          qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+        if(sl.at(5).contains(QRegExp("^(.*:Вход.*|.*:Выход.*)$"))){ //new regular expression, include all variants of enter and exit
             EventInfo ei;
             //          qDebug()<<sl.at(0);
             ei.date = QDate::fromString(sl.at(0),"dd.MM.yyyy");
@@ -86,9 +85,6 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
             if(ei.date.isValid() and ei.time.isValid()){
                 this->evenVec.append(ei);
             }
-        }
-        else{
-            qDebug() << "dlpaskhdjhbkslo;lpf'p;osldkjghfjkl;'"<<endl;
         }
     }
     //     qDebug()<< "evenVec size == " << evenVec.size();
@@ -114,8 +110,8 @@ bool SBdata::fileExists(QString path)
 
 void SBdata::processing()
 {
-    QRegExp regEnter("^.*:Вход.*$");
-    QRegExp regExit ("^.*:Выход.*$");
+    QRegExp regEnter("^.*:Вход.*$"); //new regular expression for enter
+    QRegExp regExit ("^.*:Выход.*$"); //new regular expression for exit
     //  qDebug() << "start";
     int lastDay = this->targetDate.daysInMonth();
     this->vOut.clear();
