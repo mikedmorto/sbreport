@@ -24,7 +24,7 @@ bool SBdata::loadFio(const QString &path)
         return false;
     }
     QTextStream in(&fioFile);
-    in.setCodec("CP-1251");
+    in.setCodec("UTF-8");
     while(!in.atEnd()){
         QString line = in.readLine();
         //      qDebug() << "The current string " << line << endl;
@@ -60,7 +60,7 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
     //     qDebug()<<"start cycle of loading";
     //     todo : delete this out for debug
     QTextStream out(stdout);
-
+    out.setCodec("UTF-8");
     while(!in.atEnd()){
         QString line = in.readLine();
         //       qDebug() << "The current string " << line;
