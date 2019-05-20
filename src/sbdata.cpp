@@ -24,7 +24,7 @@ bool SBdata::loadFio(const QString &path)
         return false;
     }
     QTextStream in(&fioFile);
-    in.setCodec("UTF-8");
+    in.setCodec("CP-1251");
     while(!in.atEnd()){
         QString line = in.readLine();
         //      qDebug() << "The current string " << line << endl;
@@ -43,7 +43,7 @@ void SBdata::clearFio()
 
 bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
 {
-    //  qDebug()<<"Load event start";
+    //qDebug()<<"Load event start";
     this->clearEvent();
     QFile eventFile;
     this->targetDate = targetDate;
@@ -55,25 +55,25 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
         return false;
     }
     QTextStream in(&eventFile);
-    in.setCodec("UTF-8");
+    in.setCodec("CP-1251");
     //     qDebug()<<"start cycle of loading";
     //     todo : delete this out for debug
     QTextStream out(stdout);
-    out.setCodec("UTF-8");
 
     while(!in.atEnd()){
         QString line = in.readLine();
         //       qDebug() << "The current string " << line;
         QStringList sl = line.split('\t');
+
         //      qDebug() << sl;
         if(sl.size() < 6 and sl.size() > 10)
             continue;
-        //      qDebug() << sl.at(5);
+        qDebug() << sl.at(5) << endl;
         //      out<< sl.at(0) << endl;
         QDate tdate = QDate::fromString(sl.at(0),"dd.MM.yyyy");
         if( !((tdate.year() == targetDate.year()) && (tdate.month() == targetDate.month())) )
             continue;
-        if(sl.at(5).contains(QRegExp("^(([0-9]*|парковка):Вход.*|([0-9]*|парковка):Выход.*)$"))){
+        if(sl.at(5).contains(QRegExp("^(.*:Вход.*|.*:Выход.*)$"))){
             //          if(sl.at(5).contains(QRegExp(QString::fromUtf8("^.*\:Вход.*$")))){
             //          qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
             EventInfo ei;
@@ -82,11 +82,13 @@ bool SBdata::loadEvent(const QString &path, const QDate &targetDate)
             ei.time = QTime::fromString(sl.at(1), "h:mm:ss");
             ei.event = sl.at(5);
             ei.person = sl.at(8);
-
             //          testing of date time
             if(ei.date.isValid() and ei.time.isValid()){
                 this->evenVec.append(ei);
             }
+        }
+        else{
+            qDebug() << "dlpaskhdjhbkslo;lpf'p;osldkjghfjkl;'"<<endl;
         }
     }
     //     qDebug()<< "evenVec size == " << evenVec.size();
@@ -112,8 +114,8 @@ bool SBdata::fileExists(QString path)
 
 void SBdata::processing()
 {
-    QRegExp regEnter("^([0-9]*|парковка):Вход.*$");
-    QRegExp regExit ("^([0-9]*|парковка):Выход.*$");
+    QRegExp regEnter("^.*:Вход.*$");
+    QRegExp regExit ("^.*:Выход.*$");
     //  qDebug() << "start";
     int lastDay = this->targetDate.daysInMonth();
     this->vOut.clear();
@@ -187,14 +189,42 @@ bool SBdata::saveOutput(const QString savePath)
         this->lastError += fo.errorString() + "\n";
         return false;
     }
+    // write the table head
+
+    for(int i = 0; i < 1; i++){
+        QString ret;
+
+        ret.append("");
+        for(int j = 0; j < vOut.at(i).vFirstEnter.size(); j++){
+            ret.append(",");
+            ret.append(QString::number(j));
+
+        }
+        ret.append("\n");
+        fo.write(ret.toUtf8());
+    }
+
+    // write data
+
     for(int i = 0; i < vOut.size(); i++){
         QString ret;
+
         ret.append(vOut.at(i).person);
         for(int j = 0; j < vOut.at(i).vFirstEnter.size(); j++){
             ret.append(",");
-            ret.append(vOut.at(i).vFirstEnter.at(j).toString("hh:mm:ss"));
+
+            //if(vOut.at(i).vFirstEnter.at(j).isValid()){
+                ret.append(vOut.at(i).vFirstEnter.at(j).toString("h:mm:ss"));
+           // }else{
+              //  ret.append("0");
+            //}
+
             ret.append("-");
-            ret.append(vOut.at(i).vLastExit.at(j).toString("hh:mm:ss"));
+            if(vOut.at(i).vLastExit.at(j).isValid()){
+                ret.append(vOut.at(i).vLastExit.at(j).toString("h:mm:ss"));
+            }else{
+                ret.append("0");
+            }
         }
         ret.append("\n");
         fo.write(ret.toUtf8());

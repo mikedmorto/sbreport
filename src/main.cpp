@@ -69,6 +69,7 @@ int main(int argc, char *argv[])
     if(parser.isSet("m"))
     {
         cfg.setTargetDate(parser.value("m"));
+        //qDebug() << cfg.getTargetDate().toString("MM.yyyy");
         log.slotPut("MAIN", MLog::logDebug, QString("Param date = \"%1\"").arg(cfg.getTargetDate().toString("MM.yyyy")));
         if(!cfg.isValidDate()){
             log.slotPut("MAIN", MLog::logAlert, QString("invalid date time format. Exit."));
